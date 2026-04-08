@@ -22,7 +22,7 @@ body {
 /* 文字を入れる白い枠線付きの箱 */
 .container {
     background-color: rgba(255, 255, 255, 0.05); /* わずかに白を混ぜて背景を透かす */
-    backdrop-filter: blur(10px);               /* 背後をぼかす（高級感が出ます） */
+    backdrop-filter: blur(5px);               /* 背後をぼかす（高級感が出ます） */
     padding: 40px;
     border-radius: 20px;
     border: 1px solid rgba(255, 255, 255, 0.1);
