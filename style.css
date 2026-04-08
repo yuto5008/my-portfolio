@@ -3,7 +3,7 @@ body {
     padding: 0;
     font-family: 'Helvetica Neue', Arial, sans-serif;
     /* 背景画像の設定 */
-    background-image: url('bmw.jpg');
+    background-image: url('BMW.jpg');
     background-size: cover;      /* 画面いっぱいに広げる */
     background-position: center;  /* 画像の中央を表示 */
     background-attachment: fixed; /* スクロールしても背景を動かさない */
