@@ -12,7 +12,7 @@ body {
 
 /* 画像の上に重ねる黒いフィルター */
 .overlay {
-    background-color: rgba(0, 0, 0, 0.6); /* 黒色の透明度60% */
+    background-color: rgba(0, 0, 0, 0.3); /* 黒色の透明度60% */
     min-height: 100vh;                   /* 画面全体の高さを確保 */
     display: flex;
     justify-content: center;             /* 横方向の中央寄せ */
