@@ -111,3 +111,17 @@ nav li:hover {
     background: rgba(52, 152, 219, 0.5); /* マウスを乗せると青っぽく光る */
     cursor: pointer;
 }
+/* ボタンの基本スタイル（すでにある場合は調整してください） */
+.contact-button {
+    transition: all 0.4s ease; /* 変化を滑らかにする */
+    position: relative;
+    overflow: hidden;
+}
+
+/* JavaScriptでこのクラスが追加された時に光る */
+.is-glowing {
+    box-shadow: 0 0 20px #3498db, 0 0 40px #3498db; /* 青い光の輪郭 */
+    background-color: #3498db !important;
+    color: white !important;
+    transform: scale(1.1); /* 少し大きくする */
+}

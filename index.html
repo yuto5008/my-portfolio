@@ -2,60 +2,85 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>サイトのタイトル</title>
+    <title>My Portfolio</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="overlay">
         <div class="container">
-    <header>
-        <h1>My Home Page</h1>
-        <nav>
-    <ul>
-        <li><a href="#about">About</a></li>
-        <li><a href="#skills">Skills</a></li>
-        <li><a href="#contact">Contact</a></li>
-    </ul>
-</nav>
-    </header>
+            <header>
+                <h1>My Home Page</h1>
+                <nav>
+                    <ul>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#skills">Skills</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </nav>
+            </header>
 
-    <main>
-    <section id="about">
-        <h2>About Me</h2>
-        <p>情報通信工学を専攻している学部3年生です。通信プロトコルや信号処理の理論に興味があり、現在はWeb制作を通じて、理論を形にする楽しさを学んでいます。</p>
-    </section>
+            <main>
+                <section id="about">
+                    <h2>About Me</h2>
+                    <p>情報通信工学を専攻している学部3年生です。通信プロトコルや信号処理の理論に興味があり、現在はWeb制作を通じて、理論を形にする楽しさを学んでいます。</p>
+                </section>
 
-    <section id="skills">
-        <h2>Skills & Interests</h2>
-        <div class="skills-container">
-            <span class="tag">Information Theory</span>
-            <span class="tag">C / Python</span>
-            <span class="tag">Signal Processing</span>
-            <span class="tag">HTML/CSS</span>
+                <section id="skills">
+                    <h2>Skills & Interests</h2>
+                    <div class="skills-container">
+                        <span class="tag">Information Theory</span>
+                        <span class="tag">C / Python</span>
+                        <span class="tag">Signal Processing</span>
+                        <span class="tag">HTML/CSS</span>
+                    </div>
+                </section>
+
+                <section id="favorites">
+                    <h2>Favorites</h2>
+                    <ul>
+                        <li>BMW (M-series / Performance Cars) & JDM</li>
+                        <li>Programming</li>
+                        <li>Travel (Turkey, Greece, etc.)</li>
+                    </ul>
+                </section>
+
+                <section id="contact">
+                    <h2>Contact</h2>
+                    <p>インターンシップや技術的な交流に興味があります。お気軽にご連絡ください。</p>
+                    <a href="mailto:your-email@example.com" class="contact-button">メールを送る</a>
+                </section>
+            </main>
+
+            <footer>
+                <p>© 2026 My Website</p>
+                <p style="font-size: 0.7rem; opacity: 0.6;">
+                    Photo by <a href="https://unsplash.com/ja/@martinkatler" target="_blank" style="color: inherit;">Martin Katler</a> on <a href="https://unsplash.com/ja/photos/94lAQc7ipNg" target="_blank" style="color: inherit;">Unsplash</a>
+                </p>
+            </footer>
         </div>
-    </section>
-
-    <section id="favorites">
-        <h2>Favorites</h2>
-        <ul>
-            <li>BMW (M-series / Performance Cars) & JDM</li>
-            <li>Programming</li>
-            <li>Travel (Turkey, Greece, etc.)</li>
-        </ul>
-    </section>
-    <section id="contact">
-    <h2>Contact</h2>
-    <p>インターンシップや技術的な交流に興味があります。お気軽にご連絡ください。</p>
-    <a href="mailto:your-email@example.com" class="contact-button">メールを送る</a>
-</section>
-</main>
-    <footer>
-    <p>© 2026 My Website</p>
-    <p style="font-size: 0.7rem; opacity: 0.6;">
-        Photo by <a href="https://unsplash.com/ja/@martinkatler" target="_blank" style="color: inherit;">Martin Katler</a> on <a href="https://unsplash.com/ja/%E5%86%99%E7%9C%9F/%E6%98%BC%E9%96%93%E6%A3%AE%E3%81%AB%E9%A7%90%E8%BB%8A%E3%81%97%E3%81%9F%E9%BB%92%E3%81%AEbmw-m3%E3%82%AF%E3%83%BC%E3%83%9A-94lAQc7ipNg" target="_blank" style="color: inherit;">Unsplash</a>
-    </p>
-</footer>
     </div>
- </div>
+
+    <script>
+        // 光らせたい要素をすべて取得
+        const targets = document.querySelectorAll('nav li, .contact-button');
+        const overlay = document.querySelector('.overlay');
+
+        targets.forEach(target => {
+            // マウスが乗ったとき
+            target.addEventListener('mouseenter', () => {
+                target.classList.add('is-glowing');
+                // 背景を明るくしてBMWを見せる
+                overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
+                overlay.style.transition = 'background-color 0.5s ease';
+            });
+
+            // マウスが離れたとき
+            target.addEventListener('mouseleave', () => {
+                target.classList.remove('is-glowing');
+                // 背景の暗さを戻す
+                overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.4)';
+            });
+        });
+    </script>
 </body>
 </html>
