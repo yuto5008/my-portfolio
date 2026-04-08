@@ -24,6 +24,12 @@
                     <h2>About Me</h2>
                     <p>情報通信工学を専攻している学部3年生です。通信プロトコルや信号処理の理論に興味があり、現在はWeb制作を通じて、理論を形にする楽しさを学んでいます。</p>
                 </section>
+                <section id="weather">
+    <h2>Current Weather</h2>
+    <div id="weather-info" class="weather-display">
+        <span class="loading">Fetching data...</span>
+    </div>
+</section>
 
                 <section id="skills">
                     <h2>Skills & Interests</h2>
@@ -81,6 +87,47 @@
                 overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.4)';
             });
         });
+
+        // --- お天気API (Open-Meteo) の実装 ---
+async function fetchWeather() {
+    const infoElement = document.getElementById('weather-info');
+    // 大阪の緯度・経度
+    const lat = 34.6937;
+    const lon = 135.5023;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Network response was not ok');
+        
+        const data = await response.json();
+        const { temperature, weathercode } = data.current_weather;
+
+        // 天気コードをアイコンに変換
+        const weatherIcons = {
+            0: '☀️ Clear',
+            1: '🌤 Mainly Clear', 2: '⛅ Partly Cloudy', 3: '☁️ Overcast',
+            45: '🌫 Fog', 48: '🌫 Fog',
+            51: '🌦 Drizzle', 61: '☔ Rain', 71: '❄️ Snow', 95: '⛈ Thunderstorm'
+        };
+        const status = weatherIcons[weathercode] || '✨ Condition Clear';
+
+        // HTMLに反映
+        infoElement.innerHTML = `
+            <div class="weather-item">
+                <span class="temp">${temperature}°C</span>
+                <span class="status">${status}</span>
+                <span class="location">in Osaka</span>
+            </div>
+        `;
+    } catch (error) {
+        infoElement.innerHTML = `<p>Weather data unavailable</p>`;
+        console.error('Weather API Error:', error);
+    }
+}
+
+// ページ読み込み時に実行
+window.addEventListener('load', fetchWeather);
     </script>
 </body>
 </html>
