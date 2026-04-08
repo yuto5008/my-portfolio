@@ -1,0 +1,113 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    /* 背景画像の設定 */
+    background-image: url('bmw.jpg');
+    background-size: cover;      /* 画面いっぱいに広げる */
+    background-position: center;  /* 画像の中央を表示 */
+    background-attachment: fixed; /* スクロールしても背景を動かさない */
+    color: white;                /* 文字を白に */
+}
+
+/* 画像の上に重ねる黒いフィルター */
+.overlay {
+    background-color: rgba(0, 0, 0, 0.6); /* 黒色の透明度60% */
+    min-height: 100vh;                   /* 画面全体の高さを確保 */
+    display: flex;
+    justify-content: center;             /* 横方向の中央寄せ */
+    align-items: center;                 /* 縦方向の中央寄せ */
+}
+
+/* 文字を入れる白い枠線付きの箱 */
+.container {
+    background-color: rgba(255, 255, 255, 0.05); /* わずかに白を混ぜて背景を透かす */
+    backdrop-filter: blur(10px);               /* 背後をぼかす（高級感が出ます） */
+    padding: 40px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: 600px;
+    width: 90%;
+}
+
+h1 {
+    font-size: 2.5rem;
+    border-bottom: 2px solid #fff;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+}
+
+h2 {
+    color: #3498db; /* アクセントカラーに青系を採用 */
+}
+
+ul {
+    list-style-type: none; /* ドットを消す */
+    padding: 0;
+}
+
+li {
+    background: rgba(255, 255, 255, 0.1);
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+}
+li:hover {
+    background: rgba(255, 255, 255, 0.2); /* 少し明るくする */
+    transform: translateX(10px);        /* 右に10px動かす */
+    transition: 0.3s;                  /* 0.3秒かけて滑らかに */
+    cursor: pointer;
+}
+/* 画面の幅が600px以下（スマホなど）になった時の設定 */
+@media (max-width: 600px) {
+    .container {
+        width: 95%;
+        padding: 20px;
+    }
+    h1 {
+        font-size: 1.8rem; /* スマホでは文字を少し小さく */
+    }
+}
+nav ul {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    list-style: none;
+    margin-bottom: 20px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 0.9rem;
+    opacity: 0.7;
+    transition: 0.3s;
+}
+
+nav a:hover {
+    opacity: 1;
+    border-bottom: 1px solid white;
+}
+/* スキルタグのデザイン */
+.tag {
+    display: inline-block;
+    background: rgba(52, 152, 219, 0.2); /* BMWの青っぽいイメージに合わせて */
+    border: 1px solid #3498db;
+    padding: 6px 14px;
+    border-radius: 20px;
+    margin: 5px;
+    font-size: 0.85rem;
+    color: #3498db;
+    font-weight: bold;
+}
+nav li {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px 16px;
+    border-radius: 5px;
+    transition: 0.3s; /* 変化を滑らかにする */
+}
+
+nav li:hover {
+    background: rgba(52, 152, 219, 0.5); /* マウスを乗せると青っぽく光る */
+    cursor: pointer;
+}
