@@ -157,3 +157,47 @@ nav li:hover {
     font-size: 0.8rem;
     opacity: 0.7;
 }
+#ai-concierge {
+    margin: 40px 0;
+}
+
+.concierge-box {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    border-radius: 15px;
+    border: 1px solid rgba(0, 123, 255, 0.3); /* BMWブルーのアクセント */
+}
+
+#car-query {
+    width: 100%;
+    height: 80px;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255, 255, 255, 0.9);
+    margin: 10px 0;
+    font-size: 1rem;
+    color: #333;
+    resize: none;
+}
+
+#ask-btn {
+    background: #007bff;
+    color: white;
+    padding: 10px 25px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: bold;
+}
+
+#ask-btn:hover {
+    background: #0056b3;
+    transform: scale(1.05);
+}
+
+#ask-btn:disabled {
+    background: #666;
+    cursor: not-allowed;
+}

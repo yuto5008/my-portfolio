@@ -49,6 +49,16 @@
                         <li>Travel (Turkey, Greece, etc.)</li>
                     </ul>
                 </section>
+                <section id="ai-concierge">
+    <h2>AI Car Concierge</h2>
+    <div class="concierge-box">
+        <p>あなたの希望を伝えると、AIがBMWやJDMから最適な1台を提案します。</p>
+        <textarea id="car-query" placeholder="例：予算500万で、週末のドライブが楽しくなるBMWを教えて"></textarea>
+        <button id="ask-btn" onclick="askCarAI()">AIに相談する</button>
+        <div id="ai-result" class="weather-display" style="display:none; margin-top: 15px;">
+            </div>
+    </div>
+</section>
 
                 <section id="contact">
                     <h2>Contact</h2>
@@ -128,6 +138,54 @@ async function fetchWeather() {
 
 // ページ読み込み時に実行
 window.addEventListener('load', fetchWeather);
-    </script>
-</body>
-</html>
+
+async function askCarAI() {
+    const query = document.getElementById('car-query').value;
+    const resultDiv = document.getElementById('ai-result');
+    const btn = document.getElementById('ask-btn');
+
+    if (!query) return alert("内容を入力してください");
+
+    btn.disabled = true;
+    btn.innerText = "考えています...";
+    resultDiv.style.display = "block";
+    resultDiv.innerText = "AIコンシェルジュが車両を検索中...";
+
+    try {
+        // 宛先を自分のVercelサーバー（相対パス）に変更
+        // headersからAuthorization（キー）を削除
+        const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: "gpt-4o-mini", 
+                messages: [
+                    {
+                        role: "system",
+                        content: "あなたはBMWとJDM（日本車）のスペシャリストです。ユーザーの要望に対し、具体的な車種名とその車の魅力をエンジニアリングの視点（エンジン、ハンドリング、歴史など）を交えて3つ提案してください。回答は簡潔に、箇条書きでお願いします。"
+                    },
+                    {
+                        role: "user",
+                        content: query
+                    }
+                ],
+                max_tokens: 500
+            })
+        });
+
+        const data = await response.json();
+        if (data.error) throw new Error(data.error.message);
+
+        const answer = data.choices[0].message.content;
+        resultDiv.innerHTML = `<div style="text-align:left;">${answer.replace(/\n/g, '<br>')}</div>`;
+
+    } catch (error) {
+        resultDiv.innerText = "エラー: " + error.message;
+        console.error(error);
+    } finally {
+        btn.disabled = false;
+        btn.innerText = "AIに相談する";
+    }
+}
