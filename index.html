@@ -77,115 +77,97 @@
     </div>
 
     <script>
-        // 光らせたい要素をすべて取得
-        const targets = document.querySelectorAll('nav li, .contact-button');
-        const overlay = document.querySelector('.overlay');
+    // --- インタラクションの実装 ---
+    const targets = document.querySelectorAll('nav li, .contact-button');
+    const overlay = document.querySelector('.overlay');
 
-        targets.forEach(target => {
-            // マウスが乗ったとき
-            target.addEventListener('mouseenter', () => {
-                target.classList.add('is-glowing');
-                // 背景を明るくしてBMWを見せる
-                overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
-                overlay.style.transition = 'background-color 0.5s ease';
-            });
-
-            // マウスが離れたとき
-            target.addEventListener('mouseleave', () => {
-                target.classList.remove('is-glowing');
-                // 背景の暗さを戻す
-                overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.4)';
-            });
+    targets.forEach(target => {
+        target.addEventListener('mouseenter', () => {
+            target.classList.add('is-glowing');
+            overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
+            overlay.style.transition = 'background-color 0.5s ease';
         });
 
-        // --- お天気API (Open-Meteo) の実装 ---
-async function fetchWeather() {
-    const infoElement = document.getElementById('weather-info');
-    // 大阪の緯度・経度
-    const lat = 34.6937;
-    const lon = 135.5023;
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
-
-    try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error('Network response was not ok');
-        
-        const data = await response.json();
-        const { temperature, weathercode } = data.current_weather;
-
-        // 天気コードをアイコンに変換
-        const weatherIcons = {
-            0: '☀️ Clear',
-            1: '🌤 Mainly Clear', 2: '⛅ Partly Cloudy', 3: '☁️ Overcast',
-            45: '🌫 Fog', 48: '🌫 Fog',
-            51: '🌦 Drizzle', 61: '☔ Rain', 71: '❄️ Snow', 95: '⛈ Thunderstorm'
-        };
-        const status = weatherIcons[weathercode] || '✨ Condition Clear';
-
-        // HTMLに反映
-        infoElement.innerHTML = `
-            <div class="weather-item">
-                <span class="temp">${temperature}°C</span>
-                <span class="status">${status}</span>
-                <span class="location">in Osaka</span>
-            </div>
-        `;
-    } catch (error) {
-        infoElement.innerHTML = `<p>Weather data unavailable</p>`;
-        console.error('Weather API Error:', error);
-    }
-}
-
-// ページ読み込み時に実行
-window.addEventListener('load', fetchWeather);
-
-async function askCarAI() {
-    const query = document.getElementById('car-query').value;
-    const resultDiv = document.getElementById('ai-result');
-    const btn = document.getElementById('ask-btn');
-
-    if (!query) return alert("内容を入力してください");
-
-    btn.disabled = true;
-    btn.innerText = "考えています...";
-    resultDiv.style.display = "block";
-    resultDiv.innerText = "AIコンシェルジュが車両を検索中...";
-
-    try {
-        // 宛先を自分のVercelサーバー（相対パス）に変更
-        // headersからAuthorization（キー）を削除
-        const response = await fetch('/api/chat', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                model: "gpt-4o-mini", 
-                messages: [
-                    {
-                        role: "system",
-                        content: "あなたはBMWとJDM（日本車）のスペシャリストです。ユーザーの要望に対し、具体的な車種名とその車の魅力をエンジニアリングの視点（エンジン、ハンドリング、歴史など）を交えて3つ提案してください。回答は簡潔に、箇条書きでお願いします。"
-                    },
-                    {
-                        role: "user",
-                        content: query
-                    }
-                ],
-                max_tokens: 500
-            })
+        target.addEventListener('mouseleave', () => {
+            target.classList.remove('is-glowing');
+            overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.4)';
         });
+    });
 
-        const data = await response.json();
-        if (data.error) throw new Error(data.error.message);
+    // --- お天気APIの実装 ---
+    async function fetchWeather() {
+        const infoElement = document.getElementById('weather-info');
+        const lat = 34.6937;
+        const lon = 135.5023;
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
 
-        const answer = data.choices[0].message.content;
-        resultDiv.innerHTML = `<div style="text-align:left;">${answer.replace(/\n/g, '<br>')}</div>`;
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('Network response was not ok');
+            
+            const data = await response.json();
+            const { temperature, weathercode } = data.current_weather;
 
-    } catch (error) {
-        resultDiv.innerText = "エラー: " + error.message;
-        console.error(error);
-    } finally {
-        btn.disabled = false;
-        btn.innerText = "AIに相談する";
+            const weatherIcons = {
+                0: '☀️ Clear', 1: '🌤 Mainly Clear', 2: '⛅ Partly Cloudy', 3: '☁️ Overcast',
+                45: '🌫 Fog', 48: '🌫 Fog', 51: '🌦 Drizzle', 61: '☔ Rain', 71: '❄️ Snow', 95: '⛈ Thunderstorm'
+            };
+            const status = weatherIcons[weathercode] || '✨ Condition Clear';
+
+            infoElement.innerHTML = `
+                <div class="weather-item">
+                    <span class="temp">${temperature}°C</span>
+                    <span class="status">${status}</span>
+                    <span class="location">in Osaka</span>
+                </div>
+            `;
+        } catch (error) {
+            infoElement.innerHTML = `<p>Weather data unavailable</p>`;
+            console.error('Weather API Error:', error);
+        }
     }
-}
+
+    window.addEventListener('load', fetchWeather);
+
+    // --- AIコンシェルジュの実装 ---
+    async function askCarAI() {
+        const query = document.getElementById('car-query').value;
+        const resultDiv = document.getElementById('ai-result');
+        const btn = document.getElementById('ask-btn');
+
+        if (!query) return alert("内容を入力してください");
+
+        // 状態のリセット
+        btn.disabled = true;
+        btn.innerText = "検索中...";
+        resultDiv.style.display = "block";
+        resultDiv.innerHTML = "AIコンシェルジュが車両を検索中...";
+
+        try {
+            // Vercel上の自分のAPIエンドポイントを叩く
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt: query }) // サーバー側に渡すデータをシンプルに
+            });
+
+            const data = await response.json();
+
+            // エラーハンドリング
+            if (!response.ok) {
+                throw new Error(data.error || '通信エラーが発生しました');
+            }
+
+            // AIの回答を表示（api/chat.js の実装に合わせて調整）
+            const answer = data.answer || data.message?.content || "回答を取得できませんでした。";
+            resultDiv.innerHTML = `<div style="text-align:left;">${answer.replace(/\n/g, '<br>')}</div>`;
+
+        } catch (error) {
+            resultDiv.innerText = "エラー: " + error.message;
+            console.error('AI API Error:', error);
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "AIに相談する";
+        }
+    }
+</script>
