@@ -230,45 +230,43 @@ searchContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
     window.addEventListener('load', fetchWeather);
 
-    // --- AIコンシェルジュの実装 ---
-    async function askCarAI() {
-        const query = document.getElementById('car-query').value;
-        const resultDiv = document.getElementById('ai-result');
-        const btn = document.getElementById('ask-btn');
+    // --- 4. AIコンシェルジュの実装（修正版） ---
+// window. をつけることで、HTMLの onclick="askCarAI()" から呼べるようになります
+window.askCarAI = async function() {
+    const query = document.getElementById('car-query').value;
+    const resultDiv = document.getElementById('ai-result');
+    const btn = document.getElementById('ask-btn');
 
-        if (!query) return alert("内容を入力してください");
+    if (!query) return alert("内容を入力してください");
 
-        // 状態のリセット
-        btn.disabled = true;
-        btn.innerText = "検索中...";
-        resultDiv.style.display = "block";
-        resultDiv.innerHTML = "AIコンシェルジュが車両を検索中...";
+    // 状態のリセット
+    btn.disabled = true;
+    btn.innerText = "検索中...";
+    resultDiv.style.display = "block";
+    resultDiv.innerHTML = "AIコンシェルジュが車両を検索中...";
 
-        try {
-            // Vercel上の自分のAPIエンドポイントを叩く
-            const response = await fetch('/api/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prompt: query }) // サーバー側に渡すデータをシンプルに
-            });
+    try {
+        const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ prompt: query })
+        });
 
-            const data = await response.json();
+        const data = await response.json();
 
-            // エラーハンドリング
-            if (!response.ok) {
-                throw new Error(data.error || '通信エラーが発生しました');
-            }
-
-            // AIの回答を表示（api/chat.js の実装に合わせて調整）
-            const answer = data.answer || data.message?.content || "回答を取得できませんでした。";
-            resultDiv.innerHTML = `<div style="text-align:left;">${answer.replace(/\n/g, '<br>')}</div>`;
-
-        } catch (error) {
-            resultDiv.innerText = "エラー: " + error.message;
-            console.error('AI API Error:', error);
-        } finally {
-            btn.disabled = false;
-            btn.innerText = "AIに相談する";
+        if (!response.ok) {
+            throw new Error(data.error || '通信エラーが発生しました');
         }
+
+        const answer = data.answer || data.message?.content || "回答を取得できませんでした。";
+        resultDiv.innerHTML = `<div style="text-align:left;">${answer.replace(/\n/g, '<br>')}</div>`;
+
+    } catch (error) {
+        resultDiv.innerText = "エラー: " + error.message;
+        console.error('AI API Error:', error);
+    } finally {
+        btn.disabled = false;
+        btn.innerText = "AIに相談する";
     }
+}
 </script>
