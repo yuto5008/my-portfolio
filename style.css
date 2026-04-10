@@ -278,3 +278,285 @@ footer p {
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
 }
+
+
+/* ================================================= */
+/* 1. ベース設定（背景固定・レイヤー構造を維持） */
+/* ================================================= */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: white;
+    background-color: #000;
+}
+
+/* 背景コンテナ：これから変えない固定設定 */
+.background-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: -1;
+}
+
+.bg-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: opacity 0.1s ease-out;
+}
+
+.bmw-layer {
+    background-image: url('BMW.jpg');
+    z-index: 2;
+}
+
+.silvia-layer {
+    background-image: url('silvia.jpg');
+    z-index: 1;
+    background-position: center 75%;
+}
+
+.overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+    min-height: 100vh;
+    width: 100%;
+    position: relative;
+    z-index: 10;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(8px);
+    border-radius: 20px;
+}
+
+/* ================================================= */
+/* 2. ヘッダー・ナビゲーション・共通部品 */
+/* ================================================= */
+h1 {
+    font-size: 2.5rem;
+    border-bottom: 2px solid #fff;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+    letter-spacing: 2px;
+}
+
+h2 {
+    color: #3498db; /* 基本アクセント：BMWブルー */
+    margin-top: 40px;
+}
+
+nav ul {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    list-style: none;
+    padding: 0;
+    margin-bottom: 30px;
+}
+
+/* 元のボタン機能を維持：BMWブルーへのホバー */
+nav li {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px 16px;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+nav li:hover {
+    background: rgba(52, 152, 219, 0.5);
+    transform: translateY(-2px);
+    cursor: pointer;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* 既存のリスト項目（BMW/Programming等）のホバー挙動 */
+main ul li {
+    background: rgba(255, 255, 255, 0.1);
+    margin: 10px 0;
+    padding: 12px;
+    border-radius: 8px;
+    transition: 0.3s ease;
+}
+
+main ul li:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateX(10px); /* 右にスライドする元の機能 */
+    cursor: pointer;
+}
+
+/* ================================================= */
+/* 3. Travelセクション専用（シルビア・エメラルドグリーン） */
+/* ================================================= */
+
+/* タイトルのアンダーライン */
+.travel-heading {
+    color: #00ffcc !important;
+    font-size: 1.2rem !important;
+    margin: 25px 0 20px 0 !important;
+}
+
+.travel-heading span {
+    border-bottom: 2px solid #00ffcc;
+    padding-bottom: 5px;
+}
+
+/* カプセル型タグ：画像再現 */
+.tag-flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.tag-chip {
+    cursor: pointer;
+    padding: 8px 18px;
+    border-radius: 25px;
+    border: 1px solid #00ffcc;
+    background-color: rgba(0, 255, 204, 0.1);
+    color: #00ffcc;
+    font-size: 0.9rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.tag-chip:hover {
+    background-color: rgba(0, 255, 204, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 255, 204, 0.3);
+}
+
+/* 検索窓：ネオン調 */
+#travel-search-input {
+    width: 100%;
+    padding: 12px 20px;
+    border-radius: 10px;
+    border: 1px solid #00ffcc;
+    background: rgba(0, 0, 0, 0.4) !important;
+    color: white;
+    font-size: 1rem;
+    outline: none;
+    box-sizing: border-box;
+    transition: 0.3s;
+}
+
+#travel-search-input:focus {
+    box-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
+}
+
+/* 画像再現：下側の大きなグレーのメッセージ箱 */
+.placeholder-box {
+    grid-column: 1 / -1;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    padding: 50px 20px;
+    border-radius: 15px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    margin-top: 20px;
+}
+
+.placeholder-box p {
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+    font-size: 1rem;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+/* ================================================= */
+/* 4. AIコンシェルジュ・お天気（既存デザイン維持） */
+/* ================================================= */
+.concierge-box {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    border-radius: 15px;
+    border: 1px solid rgba(0, 123, 255, 0.3);
+}
+
+#car-query {
+    width: 100%;
+    height: 80px;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255, 255, 255, 0.9);
+    margin: 10px 0;
+    font-size: 1rem;
+    color: #333;
+    resize: none;
+    box-sizing: border-box;
+}
+
+#ask-btn {
+    background: #007bff; /* BMWブルーボタン */
+    color: white;
+    padding: 10px 25px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+#ask-btn:hover {
+    background: #0056b3;
+    transform: scale(1.05);
+}
+
+.weather-display {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(5px);
+    padding: 15px;
+    border-radius: 12px;
+    display: inline-block;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.temp {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #3498db;
+}
+
+/* ================================================= */
+/* 5. その他・フッター */
+/* ================================================= */
+footer {
+    text-align: center;
+    margin-top: 80px;
+    padding: 30px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 600px) {
+    .container {
+        width: 95%;
+        padding: 20px;
+    }
+    h1 {
+        font-size: 1.8rem;
+    }
+}
