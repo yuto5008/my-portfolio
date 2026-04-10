@@ -1,3 +1,4 @@
+/* --- 1. ベース設定 --- */
 body {
     margin: 0;
     padding: 0;
@@ -26,180 +27,151 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    transition: opacity 0.1s ease-out;
 }
 
 /* 前半：BMW */
 .bmw-layer {
     background-image: url('BMW.jpg');
-    z-index: 2; /* 最初はBMWが一番上 */
+    z-index: 2;
 }
 
 /* 後半：シルビア */
 .silvia-layer {
     background-image: url('silvia.jpg');
-    z-index: 1; /* 下で待機 */
-
-/* ↓ ここを調整します ↓ */
-    background-position: center 75%; /* 画像の「下側」を基準に表示 */
+    z-index: 1;
+    background-position: center 75%; /* シルビアの顔が見える位置に調整 */
 }
 
-/* オーバーレイ（全体の暗さ） */
+/* 全体を覆うオーバーレイ */
 .overlay {
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.5);
     min-height: 100vh;
     width: 100%;
     position: relative;
     z-index: 10;
 }
 
+/* メインコンテナ（すりガラス効果） */
 .container {
     max-width: 800px;
     margin: 0 auto;
     padding: 40px 20px;
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(8px);
+    border-radius: 20px;
 }
 
+/* --- 2. ヘッダー・ナビゲーション --- */
 h1 {
     font-size: 2.5rem;
     border-bottom: 2px solid #fff;
     padding-bottom: 10px;
     margin-bottom: 30px;
+    letter-spacing: 2px;
 }
 
 h2 {
-    color: #3498db; /* アクセントカラーに青系を採用 */
+    color: #3498db; /* BMWブルー */
+    margin-top: 40px;
 }
 
-ul {
-    list-style-type: none; /* ドットを消す */
-    padding: 0;
-}
-
-li {
-    background: rgba(255, 255, 255, 0.1);
-    margin: 10px 0;
-    padding: 10px;
-    border-radius: 5px;
-}
-li:hover {
-    background: rgba(255, 255, 255, 0.2); /* 少し明るくする */
-    transform: translateX(10px);        /* 右に10px動かす */
-    transition: 0.3s;                  /* 0.3秒かけて滑らかに */
-    cursor: pointer;
-}
-/* 画面の幅が600px以下（スマホなど）になった時の設定 */
-@media (max-width: 600px) {
-    .container {
-        width: 95%;
-        padding: 20px;
-    }
-    h1 {
-        font-size: 1.8rem; /* スマホでは文字を少し小さく */
-    }
-}
 nav ul {
     display: flex;
     justify-content: center;
     gap: 20px;
     list-style: none;
-    margin-bottom: 20px;
+    padding: 0;
+    margin-bottom: 30px;
+}
+
+nav li {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px 16px;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+nav li:hover {
+    background: rgba(52, 152, 219, 0.5);
+    cursor: pointer;
 }
 
 nav a {
     color: white;
     text-decoration: none;
     font-size: 0.9rem;
-    opacity: 0.7;
+    opacity: 0.8;
+}
+
+/* --- 3. Travelセクション（刷新版） --- */
+.tag-flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+/* 画像で指定されたカプセル型タグ */
+.tag-chip {
+    cursor: pointer;
+    padding: 8px 18px;
+    border-radius: 25px;
+    border: 1px solid #00ffcc; /* シルビアに合わせたエメラルドグリーン */
+    background-color: rgba(0, 255, 204, 0.1);
+    color: #00ffcc;
+    font-size: 0.9rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.tag-chip:hover {
+    background-color: rgba(0, 255, 204, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 255, 204, 0.3);
+}
+
+/* 検索入力窓 */
+#travel-search-input {
+    width: 100%;
+    padding: 12px 20px;
+    border-radius: 10px;
+    border: 1px solid #00ffcc;
+    background: rgba(0, 0, 0, 0.4);
+    color: white;
+    font-size: 1rem;
+    outline: none;
+    box-sizing: border-box;
     transition: 0.3s;
 }
 
-nav a:hover {
-    opacity: 1;
-    border-bottom: 1px solid white;
-}
-/* スキルタグのデザイン */
-.tag {
-    display: inline-block;
-    background: rgba(52, 152, 219, 0.2); /* BMWの青っぽいイメージに合わせて */
-    border: 1px solid #3498db;
-    padding: 6px 14px;
-    border-radius: 20px;
-    margin: 5px;
-    font-size: 0.85rem;
-    color: #3498db;
-    font-weight: bold;
-}
-nav li {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 8px 16px;
-    border-radius: 5px;
-    transition: 0.3s; /* 変化を滑らかにする */
+#travel-search-input:focus {
+    box-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
 }
 
-nav li:hover {
-    background: rgba(52, 152, 219, 0.5); /* マウスを乗せると青っぽく光る */
-    cursor: pointer;
-}
-/* ボタンの基本スタイル（すでにある場合は調整してください） */
-.contact-button {
-    transition: all 0.4s ease; /* 変化を滑らかにする */
-    position: relative;
-    overflow: hidden;
-}
-
-/* JavaScriptでこのクラスが追加された時に光る */
-.is-glowing {
-    box-shadow: 0 0 20px #3498db, 0 0 40px #3498db; /* 青い光の輪郭 */
-    background-color: #3498db !important;
-    color: white !important;
-    transform: scale(1.1); /* 少し大きくする */
-}
-/* お天気セクションのスタイル */
-.weather-display {
-    background: rgba(255, 255, 255, 0.1); /* ほのかな白背景 */
-    backdrop-filter: blur(5px);           /* 背景を少しぼかす */
-    padding: 15px;
-    border-radius: 12px;
-    display: inline-block;
-    margin-top: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.weather-item {
-    display: flex;
-    align-items: center;
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 15px;
+    margin-top: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 10px;
 }
 
-.temp {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: #007bff; /* BMWロゴのようなブルー系 */
-}
-
-.status {
-    font-size: 1.1rem;
-    color: #eee;
-}
-
-.location {
-    font-size: 0.8rem;
-    opacity: 0.7;
-}
-#ai-concierge {
-    margin: 40px 0;
-}
-
+/* --- 4. AIコンシェルジュ・お天気 --- */
 .concierge-box {
     background: rgba(0, 0, 0, 0.3);
     padding: 20px;
     border-radius: 15px;
-    border: 1px solid rgba(0, 123, 255, 0.3); /* BMWブルーのアクセント */
+    border: 1px solid rgba(0, 123, 255, 0.3);
 }
 
 #car-query {
     width: 100%;
     height: 80px;
-    padding: 10px;
+    padding: 12px;
     border-radius: 8px;
     border: none;
     background: rgba(255, 255, 255, 0.9);
@@ -207,6 +179,7 @@ nav li:hover {
     font-size: 1rem;
     color: #333;
     resize: none;
+    box-sizing: border-box;
 }
 
 #ask-btn {
@@ -216,8 +189,8 @@ nav li:hover {
     border: none;
     border-radius: 25px;
     cursor: pointer;
-    transition: 0.3s;
     font-weight: bold;
+    transition: 0.3s;
 }
 
 #ask-btn:hover {
@@ -225,16 +198,40 @@ nav li:hover {
     transform: scale(1.05);
 }
 
-#ask-btn:disabled {
-    background: #666;
-    cursor: not-allowed;
-}
-.gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-    margin-top: 20px;
-    background: rgba(255, 255, 255, 0.1);
+.weather-display {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(5px);
     padding: 15px;
-    border-radius: 10px;
+    border-radius: 12px;
+    display: inline-block;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.temp {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #3498db;
+}
+
+/* --- 5. フッター --- */
+footer {
+    text-align: center;
+    margin-top: 80px;
+    padding-top: 30px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+footer p {
+    margin: 8px 0;
+}
+
+/* スマホ対応 */
+@media (max-width: 600px) {
+    .container {
+        width: 95%;
+        padding: 20px;
+    }
+    h1 {
+        font-size: 1.8rem;
+    }
 }

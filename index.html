@@ -56,17 +56,17 @@
                             Travel (Turkey, Greece, etc.) 📸
                         </li>
 
-                        <div id="travel-search-container" style="display:none; margin: 15px 0;">
-                            <div id="search-tags" style="margin-bottom: 15px;">
-                                <span class="tag-chip" onclick="setSearch('ギリシャ')">#ギリシャ</span>
-                                <span class="tag-chip" onclick="setSearch('トルコ')">#トルコ</span>
-                                <span class="tag-chip" onclick="setSearch('和歌山')">#和歌山</span>
-                                <span class="tag-chip" onclick="setSearch('富山')">#富山</span>
-                                <span class="tag-chip" onclick="setSearch('')">#すべて表示</span>
-                            </div>
-                            <input type="text" id="travel-search-input" placeholder="場所を入力（例：ギリシャ、富山）" 
-                                   style="padding: 10px; width: 80%; border-radius: 5px; border: 1px solid #00ffcc; background: rgba(0,0,0,0.5); color: white;">
-                        </div>
+                        <div id="travel-search-container" style="display:none; margin: 25px 0;">
+    <div id="search-tags" class="tag-flex-container">
+        <span class="tag-chip" onclick="setSearch('ギリシャ')">#ギリシャ</span>
+        <span class="tag-chip" onclick="setSearch('トルコ')">#トルコ</span>
+        <span class="tag-chip" onclick="setSearch('和歌山')">#和歌山</span>
+        <span class="tag-chip" onclick="setSearch('富山')">#富山</span>
+        <span class="tag-chip" onclick="setSearch('')">#すべて表示</span>
+    </div>
+
+    <input type="text" id="travel-search-input" placeholder="場所を入力（例：ギリシャ、富山）">
+</div>
 
                         <div id="travel-gallery" style="display:none; margin-top: 20px;">
                             <div id="photo-list" class="gallery-grid">
