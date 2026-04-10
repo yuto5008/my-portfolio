@@ -333,7 +333,7 @@ body {
 }
 
 .container {
-    max-width: 800px;
+    max-width: 550px;
     margin: 0 auto;
     padding: 40px 20px;
     background: rgba(255, 255, 255, 0.02);
@@ -551,9 +551,9 @@ footer {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-@media (max-width: 600px) {
+@media (max-width: 500px) {
     .container {
-        width: 95%;
+        width: 92%;
         padding: 20px;
     }
     h1 {
