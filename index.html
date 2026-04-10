@@ -230,31 +230,36 @@ searchContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
     window.addEventListener('load', fetchWeather);
 
-// --- 4. AIコンシェルジュの実装（3台制限・400文字制限版） ---
+// --- 4. AIコンシェルジュの実装（500文字・3台制限版） ---
 window.askCarAI = async function() {
     const query = document.getElementById('car-query').value;
     const resultDiv = document.getElementById('ai-result');
     const btn = document.getElementById('ask-btn');
 
-    // 入力チェック
+    // 入力チェック（入力自体は400文字制限のまま、出力の質を高めます）
     if (!query) return alert("内容を入力してください");
     if (query.length > 400) {
-        return alert(`400文字以内で入力してください（現在 ${query.length} 文字）`);
+        return alert(`入力は400文字以内でお願いします（現在 ${query.length} 文字）`);
     }
 
     btn.disabled = true;
     btn.innerText = "検索中...";
     resultDiv.style.display = "block";
-    resultDiv.innerHTML = "AIが厳選した3台を提案中...";
+    resultDiv.innerHTML = "AIが詳細なデータを分析して3台を厳選中...";
 
     try {
         const response = await fetch('/api/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            // ★ポイント：命令を具体的に追加
             body: JSON.stringify({ 
+                // ★プロンプトをさらに具体化：詳細な解説を求める
                 prompt: `以下の条件に合う車を【最大3台】厳選して提案してください。
-                         回答は300文字程度にまとめ、各車両の特徴を箇条書きで簡潔に記述してください。
+                         
+                         【制約事項】
+                         1. 回答全体で500文字程度、詳細に解説してください。
+                         2. 各車両について、エンジニア的な視点（エンジン特性、ハンドリング、技術的背景など）を交えてください。
+                         3. 構成は、車両名、おすすめ理由、主要スペックの順で記述してください。
+                         
                          条件：${query}` 
             })
         });
@@ -264,12 +269,11 @@ window.askCarAI = async function() {
 
         const answer = data.answer || data.message?.content || "回答を取得できませんでした。";
         
-        // 表示を整える
-        resultDiv.innerHTML = `<div style="text-align:left; max-height: 450px; overflow-y: auto;">${answer.replace(/\n/g, '<br>')}</div>`;
+        // 表示エリア（少し高さを広げて読みやすくします）
+        resultDiv.innerHTML = `<div style="text-align:left; max-height: 600px; overflow-y: auto; line-height: 1.6;">${answer.replace(/\n/g, '<br>')}</div>`;
 
     } catch (error) {
         resultDiv.innerText = "エラー: " + error.message;
-        console.error('AI API Error:', error);
     } finally {
         btn.disabled = false;
         btn.innerText = "AIに相談する";
