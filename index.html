@@ -120,66 +120,79 @@
     </div>
 
     <script type="module">
-// --- 検索機能付きギャラリーの修正版 ---
+    // --- 1. Supabaseの初期設定 ---
+    import { createClient } from 'https://jspm.dev/@supabase/supabase-js'
 
-// タグをクリックした時に検索窓に文字を入れて検索する関数
-window.setSearch = function(word) {
-    const input = document.getElementById('travel-search-input');
-    input.value = word;
-    loadAndDisplayPhotos(word); // 検索を実行
-};
+    const SUPABASE_URL = 'https://ryvisniokamyizwgvcwx.supabase.co'
+    const SUPABASE_KEY = 'sb_publishable_lDNxEbLFUVQ7zfDRM4w8Dg_iNwoqx9l' // ★ここに自分のanonキーを貼り付けてください
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
-// 写真を読み込んで表示する関数（前回のものを流用）
-async function loadAndDisplayPhotos(keyword = "") {
-    // キーワードが空で、かつ「すべて表示」タグ以外から呼ばれた場合はメッセージを出す
-    if (!keyword && keyword !== "") {
-        photoList.innerHTML = "<p>キーワードを入力してください。</p>";
-        return;
+    // HTML要素の取得（これが必要！）
+    const travelBtn = document.getElementById('travel-btn');
+    const galleryDiv = document.getElementById('travel-gallery');
+    const photoList = document.getElementById('photo-list');
+    const searchContainer = document.getElementById('travel-search-container');
+    const searchInput = document.getElementById('travel-search-input');
+
+    // --- 2. 検索機能付きギャラリーの実装 ---
+
+    // タグをクリックした時に検索窓に文字を入れて検索する関数
+    window.setSearch = function(word) {
+        if (searchInput) {
+            searchInput.value = word;
+            loadAndDisplayPhotos(word);
+        }
+    };
+
+    // 写真を読み込んで表示する関数
+    async function loadAndDisplayPhotos(keyword = "") {
+        photoList.innerHTML = "検索中...";
+
+        try {
+            let query = supabase.from('travel_photos').select('*');
+            
+            // すべて表示（keywordが空文字）以外の場合はilikeで絞り込む
+            if (keyword) {
+                query = query.ilike('location', `%${keyword}%`);
+            }
+            
+            const { data, error } = await query.order('id', { ascending: true });
+
+            if (error) throw error;
+
+            if (!data || data.length === 0) {
+                photoList.innerHTML = `<p style="grid-column: 1/-1; text-align:center;">「${keyword}」に該当する写真はありませんでした。</p>`;
+                return;
+            }
+
+            photoList.innerHTML = data.map(photo => `
+                <div class="photo-item" style="margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; background: rgba(255,255,255,0.05);">
+                    <img src="${photo.photo_url}" alt="${photo.title}" style="width:100%; border-radius: 5px; height: 180px; object-fit: cover;">
+                    <p style="font-size: 0.9rem; margin: 8px 0 0 0;"><strong>${photo.location}</strong>: ${photo.title}</p>
+                </div>
+            `).join('');
+        } catch (error) {
+            photoList.innerHTML = "<p style='grid-column: 1/-1; text-align:center;'>データの取得に失敗しました。設定を確認してください。</p>";
+            console.error(error);
+        }
     }
 
-    photoList.innerHTML = "検索中...";
-
-    try {
-        let query = supabase.from('travel_photos').select('*');
-        if (keyword) {
-            query = query.ilike('location', `%${keyword}%`);
-        }
-        const { data, error } = await query.order('id', { ascending: true });
-
-        if (error) throw error;
-
-        if (data.length === 0) {
-            photoList.innerHTML = `<p>「${keyword}」に該当する写真はありませんでした。</p>`;
-            return;
-        }
-
-        photoList.innerHTML = data.map(photo => `
-            <div class="photo-item" style="margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; background: rgba(255,255,255,0.05);">
-                <img src="${photo.photo_url}" alt="${photo.title}" style="width:100%; border-radius: 5px; height: 180px; object-fit: cover;">
-                <p style="font-size: 0.9rem; margin: 8px 0 0 0;"><strong>${photo.location}</strong>: ${photo.title}</p>
-            </div>
-        `).join('');
-    } catch (error) {
-        photoList.innerHTML = "データの取得に失敗しました。";
-    }
-}
-
-// Travelボタンをクリックした時の動作
-travelBtn.addEventListener('click', () => {
-    galleryDiv.style.display = 'block';
-    if (searchContainer) searchContainer.style.display = 'block';
-    
-    // 最初は何も表示せず、スクロールだけさせる
-    photoList.innerHTML = "<p>検索キーワードを入力するか、タグを選択してください。</p>";
-    galleryDiv.scrollIntoView({ behavior: 'smooth' });
-});
-
-// 検索窓の入力監視はそのまま
-if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
-        loadAndDisplayPhotos(e.target.value);
+    // Travelボタンをクリックした時の動作
+    travelBtn.addEventListener('click', () => {
+        galleryDiv.style.display = 'block';
+        if (searchContainer) searchContainer.style.display = 'block';
+        
+        // 初期状態のメッセージ
+        photoList.innerHTML = "<p style='grid-column: 1/-1; text-align:center; color: #ccc;'>キーワードを入力するか、上のタグを選択してください。</p>";
+        galleryDiv.scrollIntoView({ behavior: 'smooth' });
     });
-}
+
+    // 検索窓の入力監視
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            loadAndDisplayPhotos(e.target.value);
+        });
+    }
 
     // --- お天気APIの実装 ---
     async function fetchWeather() {
