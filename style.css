@@ -38,9 +38,9 @@ body {
 .silvia-layer {
     background-image: url('silvia.jpg');
     z-index: 1; /* 下で待機 */
-    
+
 /* ↓ ここを調整します ↓ */
-    background-position: center bottom; /* 画像の「下側」を基準に表示 */
+    background-position: center 75%; /* 画像の「下側」を基準に表示 */
 }
 
 /* オーバーレイ（全体の暗さ） */
