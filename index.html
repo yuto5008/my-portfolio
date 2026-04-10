@@ -184,7 +184,8 @@
         
         // 初期状態のメッセージ
         photoList.innerHTML = "<p style='grid-column: 1/-1; text-align:center; color: #ccc;'>キーワードを入力するか、上のタグを選択してください。</p>";
-        galleryDiv.scrollIntoView({ behavior: 'smooth' });
+        // 検索窓が含まれるコンテナ（travel-search-container）を画面の真ん中に持ってくる
+searchContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
 
     // 検索窓の入力監視
