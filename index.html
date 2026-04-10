@@ -51,13 +51,45 @@
 </li>
 
 <div id="travel-search-container" style="display:none; margin: 15px 0;">
+    <div id="search-tags" style="margin-bottom: 15px;">
+        <span class="tag-chip" onclick="setSearch('ギリシャ')">#ギリシャ</span>
+        <span class="tag-chip" onclick="setSearch('トルコ')">#トルコ</span>
+        <span class="tag-chip" onclick="setSearch('和歌山')">#和歌山</span>
+        <span class="tag-chip" onclick="setSearch('富山')">#富山</span>
+        <span class="tag-chip" onclick="setSearch('')">#すべて表示</span>
+    </div>
+
     <input type="text" id="travel-search-input" placeholder="場所を入力（例：ギリシャ、富山）" 
            style="padding: 10px; width: 80%; border-radius: 5px; border: 1px solid #00ffcc; background: rgba(0,0,0,0.5); color: white;">
 </div>
 
 <div id="travel-gallery" style="display:none; margin-top: 20px;">
-    <div id="photo-list" class="gallery-grid"></div>
+    <div id="photo-list" class="gallery-grid">
+        <p style="color: #ccc; grid-column: 1 / -1; text-align: center;">
+            キーワードを入力するか、上のタグを選択してください。
+        </p>
+    </div>
 </div>
+
+<style>
+    .tag-chip {
+        display: inline-block;
+        background: rgba(0, 255, 204, 0.15);
+        color: #00ffcc;
+        padding: 4px 10px;
+        border-radius: 15px;
+        margin-right: 6px;
+        margin-bottom: 8px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        border: 1px solid rgba(0, 255, 204, 0.4);
+        transition: 0.2s;
+    }
+    .tag-chip:hover {
+        background: rgba(0, 255, 204, 0.3);
+        transform: translateY(-2px);
+    }
+</style>
                     </ul>
                 </section>
                 <section id="ai-concierge">
@@ -88,42 +120,36 @@
     </div>
 
     <script type="module">
-// --- Supabaseの初期設定 ---
-import { createClient } from 'https://jspm.dev/@supabase/supabase-js'
+// --- 検索機能付きギャラリーの修正版 ---
 
-const SUPABASE_URL = 'https://ryvisniokamyizwgvcwx.supabase.co'
-const SUPABASE_KEY = 'sb_publishable_lDNxEbLFUVQ7zfDRM4w8Dg_iNwoqx9l' // ★必ず書き換えてください
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+// タグをクリックした時に検索窓に文字を入れて検索する関数
+window.setSearch = function(word) {
+    const input = document.getElementById('travel-search-input');
+    input.value = word;
+    loadAndDisplayPhotos(word); // 検索を実行
+};
 
-// DOM要素の取得
-const travelBtn = document.getElementById('travel-btn');
-const galleryDiv = document.getElementById('travel-gallery');
-const photoList = document.getElementById('photo-list');
-const searchContainer = document.getElementById('travel-search-container');
-const searchInput = document.getElementById('travel-search-input');
-
-// --- 1. 旅行写真ギャラリー（検索機能付き）の実装 ---
-
-// 写真を読み込んで表示する関数
+// 写真を読み込んで表示する関数（前回のものを流用）
 async function loadAndDisplayPhotos(keyword = "") {
-    photoList.innerHTML = keyword ? "検索中..." : "写真を読み込み中...";
+    // キーワードが空で、かつ「すべて表示」タグ以外から呼ばれた場合はメッセージを出す
+    if (!keyword && keyword !== "") {
+        photoList.innerHTML = "<p>キーワードを入力してください。</p>";
+        return;
+    }
+
+    photoList.innerHTML = "検索中...";
 
     try {
-        // 基本のクエリ作成
         let query = supabase.from('travel_photos').select('*');
-
-        // もし検索ワードがあれば、locationカラムで「部分一致」検索を行う
         if (keyword) {
             query = query.ilike('location', `%${keyword}%`);
         }
-
         const { data, error } = await query.order('id', { ascending: true });
 
         if (error) throw error;
 
-        // HTMLを生成
         if (data.length === 0) {
-            photoList.innerHTML = "<p>該当する写真が見つかりませんでした。</p>";
+            photoList.innerHTML = `<p>「${keyword}」に該当する写真はありませんでした。</p>`;
             return;
         }
 
@@ -133,50 +159,27 @@ async function loadAndDisplayPhotos(keyword = "") {
                 <p style="font-size: 0.9rem; margin: 8px 0 0 0;"><strong>${photo.location}</strong>: ${photo.title}</p>
             </div>
         `).join('');
-
     } catch (error) {
         photoList.innerHTML = "データの取得に失敗しました。";
-        console.error('Supabase Error:', error);
     }
 }
 
-// 「Travel」ボタンを押した時の初期動作
+// Travelボタンをクリックした時の動作
 travelBtn.addEventListener('click', () => {
     galleryDiv.style.display = 'block';
     if (searchContainer) searchContainer.style.display = 'block';
-    loadAndDisplayPhotos(); // 最初は全表示
+    
+    // 最初は何も表示せず、スクロールだけさせる
+    photoList.innerHTML = "<p>検索キーワードを入力するか、タグを選択してください。</p>";
     galleryDiv.scrollIntoView({ behavior: 'smooth' });
 });
 
-// 検索窓に文字が入力されるたびに実行（リアルタイム検索）
+// 検索窓の入力監視はそのまま
 if (searchInput) {
     searchInput.addEventListener('input', (e) => {
         loadAndDisplayPhotos(e.target.value);
     });
 }
-
-// ギャラリーを閉じる（もしボタンがあれば）
-window.closeGallery = function() {
-    galleryDiv.style.display = 'none';
-    if (searchContainer) searchContainer.style.display = 'none';
-};
-
-
-// --- 2. インタラクションの実装（ホバー演出） ---
-const targets = document.querySelectorAll('nav li, .contact-button, #travel-btn');
-const overlay = document.querySelector('.overlay');
-
-targets.forEach(target => {
-    target.addEventListener('mouseenter', () => {
-        target.classList.add('is-glowing');
-        overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
-    });
-
-    target.addEventListener('mouseleave', () => {
-        target.classList.remove('is-glowing');
-        overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.4)';
-    });
-});
 
     // --- お天気APIの実装 ---
     async function fetchWeather() {
