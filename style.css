@@ -235,3 +235,82 @@ footer p {
         font-size: 1.8rem;
     }
 }
+
+/* --- Travel Section 完全再現スタイル --- */
+
+/* タイトルのデザイン（アンダーライン付き） */
+.travel-title {
+    font-size: 1.2rem !important;
+    color: #00ffcc !important;
+    margin-bottom: 20px !important;
+    text-align: left;
+}
+.travel-title span {
+    border-bottom: 2px solid #00ffcc;
+    padding-bottom: 5px;
+}
+
+/* タグの横並び */
+.tag-flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+/* カプセル型タグ */
+.tag-chip {
+    cursor: pointer;
+    padding: 7px 18px;
+    border-radius: 25px;
+    border: 1px solid #00ffcc;
+    background: rgba(0, 255, 204, 0.1); /* ほんのり緑 */
+    color: #00ffcc;
+    font-size: 0.85rem;
+    font-weight: bold;
+    transition: 0.3s;
+}
+.tag-chip:hover {
+    background: rgba(0, 255, 204, 0.3);
+    transform: translateY(-2px);
+}
+
+/* 検索窓（ネオン枠線） */
+#travel-search-input {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid #00ffcc;
+    background: rgba(0, 0, 0, 0.3); /* 背景を透かす */
+    color: white;
+    font-size: 1rem;
+    outline: none;
+    box-sizing: border-box;
+    box-shadow: 0 0 5px rgba(0, 255, 204, 0.2);
+}
+
+/* 下側の大きなグレーの箱（初期メッセージ用） */
+.placeholder-box {
+    grid-column: 1 / -1;
+    background: rgba(255, 255, 255, 0.08); /* 画像のような半透明グレー */
+    backdrop-filter: blur(10px); /* すりガラス効果 */
+    padding: 50px 20px;
+    border-radius: 15px;
+    text-align: center;
+    margin-top: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.placeholder-box p {
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+}
+
+/* ギャラリーのグリッド設定 */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
