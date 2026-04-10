@@ -97,8 +97,9 @@
 
             <footer>
                 <p>© 2026 My Website</p>
-                <p style="font-size: 0.7rem; opacity: 0.6;">
-                    Photo by <a href="https://unsplash.com/" target="_blank" style="color: inherit;">Unsplash</a>
+                Photos by <a href="https://unsplash.com/@superhawk123" target="_blank" style="color: inherit;">Melt3d Works</a> 
+        & <a href="https://unsplash.com/ja/@martinkatler" target="_blank" style="color: inherit;">Martin Katler</a> 
+        on <a href="https://unsplash.com/" target="_blank" style="color: inherit;">Unsplash</a>
                 </p>
             </footer>
         </div>
@@ -143,6 +144,16 @@
         if (searchInput) {
             searchInput.value = word;
             loadAndDisplayPhotos(word);
+        }
+    };
+
+    // ★ これを追加
+    window.setSearch = function(word) {
+        const searchInput = document.getElementById('travel-search-input');
+        if (searchInput) {
+            searchInput.value = word;
+            loadAndDisplayPhotos(word); // ここが既存の関数名と同じか確認！
+            searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     };
 
