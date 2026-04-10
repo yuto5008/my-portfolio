@@ -560,3 +560,44 @@ footer {
         font-size: 1.8rem;
     }
 }
+
+/* ================================================= */
+/* === Skillsセクション：画像完全再現CSS === */
+/* ================================================= */
+
+/* スキルセクション全体の余白調整 */
+#skills {
+    margin: 40px 0;
+}
+
+/* スキルタグを横に並べて隙間を作るコンテナ */
+.skills-tag-container {
+    display: flex;
+    flex-wrap: wrap; /* スマホ用：画面が狭くなったら折り返す */
+    gap: 12px;      /* 画像のような狭い間隔 */
+    margin-top: 15px;
+    padding-left: 0;
+}
+
+/* カプセル型のスキルタグデザイン（画像のデザインを再現） */
+.skill-tag {
+    display: inline-block;
+    padding: 8px 18px;
+    border-radius: 25px; /* 完全な丸み */
+    border: 1px solid #3498db; /* BMWブルー */
+    background-color: rgba(52, 152, 219, 0.1); /* ほんのり透ける背景色 */
+    color: white;
+    font-size: 0.9rem;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    cursor: default; /* クリック不可のタグ用 */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* スキルタグ：元のli:hoverに準じたホバー挙動 */
+.skill-tag:hover {
+    background-color: rgba(52, 152, 219, 0.3);
+    transform: translateY(-2px); /* 少し浮く */
+    box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+}
