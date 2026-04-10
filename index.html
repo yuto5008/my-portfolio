@@ -230,41 +230,49 @@ searchContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
     window.addEventListener('load', fetchWeather);
 
-// --- 4. AIコンシェルジュの実装（400文字制限版） ---
-    window.askCarAI = async function() {
-        const query = document.getElementById('car-query').value;
-        const resultDiv = document.getElementById('ai-result');
-        const btn = document.getElementById('ask-btn');
+// --- 4. AIコンシェルジュの実装（3台制限・400文字制限版） ---
+window.askCarAI = async function() {
+    const query = document.getElementById('car-query').value;
+    const resultDiv = document.getElementById('ai-result');
+    const btn = document.getElementById('ask-btn');
 
-        // バリデーション（文字数制限）
-        if (!query) return alert("内容を入力してください");
-        if (query.length > 400) {
-            return alert(`400文字以内で入力してください（現在 ${query.length} 文字）`);
-        }
-
-        btn.disabled = true;
-        btn.innerText = "検索中...";
-        resultDiv.style.display = "block";
-        resultDiv.innerHTML = "AIが最適な1台を提案中...";
-
-        try {
-            const response = await fetch('/api/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prompt: query })
-            });
-
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.error || '通信エラーが発生しました');
-
-            const answer = data.answer || data.message?.content || "回答を取得できませんでした。";
-            resultDiv.innerHTML = `<div style="text-align:left;">${answer.replace(/\n/g, '<br>')}</div>`;
-
-        } catch (error) {
-            resultDiv.innerText = "エラー: " + error.message;
-        } finally {
-            btn.disabled = false;
-            btn.innerText = "AIに相談する";
-        }
+    // 入力チェック
+    if (!query) return alert("内容を入力してください");
+    if (query.length > 400) {
+        return alert(`400文字以内で入力してください（現在 ${query.length} 文字）`);
     }
+
+    btn.disabled = true;
+    btn.innerText = "検索中...";
+    resultDiv.style.display = "block";
+    resultDiv.innerHTML = "AIが厳選した3台を提案中...";
+
+    try {
+        const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            // ★ポイント：命令を具体的に追加
+            body: JSON.stringify({ 
+                prompt: `以下の条件に合う車を【最大3台】厳選して提案してください。
+                         回答は300文字程度にまとめ、各車両の特徴を箇条書きで簡潔に記述してください。
+                         条件：${query}` 
+            })
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || '通信エラーが発生しました');
+
+        const answer = data.answer || data.message?.content || "回答を取得できませんでした。";
+        
+        // 表示を整える
+        resultDiv.innerHTML = `<div style="text-align:left; max-height: 450px; overflow-y: auto;">${answer.replace(/\n/g, '<br>')}</div>`;
+
+    } catch (error) {
+        resultDiv.innerText = "エラー: " + error.message;
+        console.error('AI API Error:', error);
+    } finally {
+        btn.disabled = false;
+        btn.innerText = "AIに相談する";
+    }
+}
 </script>
