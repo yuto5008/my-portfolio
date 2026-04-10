@@ -46,7 +46,18 @@
                     <ul>
                         <li>BMW (M-series / Performance Cars) & JDM</li>
                         <li>Programming</li>
-                        <li>Travel (Turkey, Greece, etc.)</li>
+                        <li id="travel-btn" style="cursor: pointer; color: #00ffcc; text-decoration: underline;">
+    Travel (Turkey, Greece, etc.) 📸
+</li>
+
+<div id="travel-search-container" style="display:none; margin: 15px 0;">
+    <input type="text" id="travel-search-input" placeholder="場所を入力（例：ギリシャ、富山）" 
+           style="padding: 10px; width: 80%; border-radius: 5px; border: 1px solid #00ffcc; background: rgba(0,0,0,0.5); color: white;">
+</div>
+
+<div id="travel-gallery" style="display:none; margin-top: 20px;">
+    <div id="photo-list" class="gallery-grid"></div>
+</div>
                     </ul>
                 </section>
                 <section id="ai-concierge">
@@ -76,23 +87,96 @@
         </div>
     </div>
 
-    <script>
-    // --- インタラクションの実装 ---
-    const targets = document.querySelectorAll('nav li, .contact-button');
-    const overlay = document.querySelector('.overlay');
+    <script type="module">
+// --- Supabaseの初期設定 ---
+import { createClient } from 'https://jspm.dev/@supabase/supabase-js'
 
-    targets.forEach(target => {
-        target.addEventListener('mouseenter', () => {
-            target.classList.add('is-glowing');
-            overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
-            overlay.style.transition = 'background-color 0.5s ease';
-        });
+const SUPABASE_URL = 'https://ryvisniokamyizwgvcwx.supabase.co'
+const SUPABASE_KEY = 'sb_publishable_lDNxEbLFUVQ7zfDRM4w8Dg_iNwoqx9l' // ★必ず書き換えてください
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
-        target.addEventListener('mouseleave', () => {
-            target.classList.remove('is-glowing');
-            overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.4)';
-        });
+// DOM要素の取得
+const travelBtn = document.getElementById('travel-btn');
+const galleryDiv = document.getElementById('travel-gallery');
+const photoList = document.getElementById('photo-list');
+const searchContainer = document.getElementById('travel-search-container');
+const searchInput = document.getElementById('travel-search-input');
+
+// --- 1. 旅行写真ギャラリー（検索機能付き）の実装 ---
+
+// 写真を読み込んで表示する関数
+async function loadAndDisplayPhotos(keyword = "") {
+    photoList.innerHTML = keyword ? "検索中..." : "写真を読み込み中...";
+
+    try {
+        // 基本のクエリ作成
+        let query = supabase.from('travel_photos').select('*');
+
+        // もし検索ワードがあれば、locationカラムで「部分一致」検索を行う
+        if (keyword) {
+            query = query.ilike('location', `%${keyword}%`);
+        }
+
+        const { data, error } = await query.order('id', { ascending: true });
+
+        if (error) throw error;
+
+        // HTMLを生成
+        if (data.length === 0) {
+            photoList.innerHTML = "<p>該当する写真が見つかりませんでした。</p>";
+            return;
+        }
+
+        photoList.innerHTML = data.map(photo => `
+            <div class="photo-item" style="margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; background: rgba(255,255,255,0.05);">
+                <img src="${photo.photo_url}" alt="${photo.title}" style="width:100%; border-radius: 5px; height: 180px; object-fit: cover;">
+                <p style="font-size: 0.9rem; margin: 8px 0 0 0;"><strong>${photo.location}</strong>: ${photo.title}</p>
+            </div>
+        `).join('');
+
+    } catch (error) {
+        photoList.innerHTML = "データの取得に失敗しました。";
+        console.error('Supabase Error:', error);
+    }
+}
+
+// 「Travel」ボタンを押した時の初期動作
+travelBtn.addEventListener('click', () => {
+    galleryDiv.style.display = 'block';
+    if (searchContainer) searchContainer.style.display = 'block';
+    loadAndDisplayPhotos(); // 最初は全表示
+    galleryDiv.scrollIntoView({ behavior: 'smooth' });
+});
+
+// 検索窓に文字が入力されるたびに実行（リアルタイム検索）
+if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+        loadAndDisplayPhotos(e.target.value);
     });
+}
+
+// ギャラリーを閉じる（もしボタンがあれば）
+window.closeGallery = function() {
+    galleryDiv.style.display = 'none';
+    if (searchContainer) searchContainer.style.display = 'none';
+};
+
+
+// --- 2. インタラクションの実装（ホバー演出） ---
+const targets = document.querySelectorAll('nav li, .contact-button, #travel-btn');
+const overlay = document.querySelector('.overlay');
+
+targets.forEach(target => {
+    target.addEventListener('mouseenter', () => {
+        target.classList.add('is-glowing');
+        overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
+    });
+
+    target.addEventListener('mouseleave', () => {
+        target.classList.remove('is-glowing');
+        overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.4)';
+    });
+});
 
     // --- お天気APIの実装 ---
     async function fetchWeather() {
