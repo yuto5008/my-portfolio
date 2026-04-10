@@ -2,21 +2,37 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Helvetica Neue', Arial, sans-serif;
-    /* 背景画像の設定 */
-    background-image: url('BMW.jpg');
-    background-size: cover;      /* 画面いっぱいに広げる */
-    background-position: center;  /* 画像の中央を表示 */
-    background-attachment: fixed; /* スクロールしても背景を動かさない */
-    color: white;                /* 文字を白に */
+    color: white;
+    background-color: #000; /* 画像が読み込まれるまでの背景色 */
+    /* ここにあった background-image 関連は削除して、下に移します */
 }
 
-/* 画像の上に重ねる黒いフィルター */
+/* --- 背景セクションの共通設定 --- */
+.bg-section {
+    width: 100%;
+    min-height: 100vh;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* ★これがスクロールで切り替わる魔法のプロパティ */
+}
+
+/* --- 前半：BMW --- */
+.bmw-bg {
+    background-image: url('BMW.jpg');
+}
+
+/* --- 後半：シルビア --- */
+.silvia-bg {
+    background-image: url('silvia.jpg'); /* ★手に入れたシルビアの画像パス */
+    border-top: 2px solid #00ffcc;     /* 境目をネオンカラーで強調 */
+}
+
+/* --- overlayの設定 --- */
 .overlay {
-    background-color: rgba(0, 0, 0, 0.4); /* 黒色の透明度60% */
-    min-height: 100vh;                   /* 画面全体の高さを確保 */
-    display: flex;
-    justify-content: center;             /* 横方向の中央寄せ */
-    align-items: center;                 /* 縦方向の中央寄せ */
+    background-color: rgba(0, 0, 0, 0.6); /* 重ねる暗さを調整 */
+    min-height: 100vh;
+    width: 100%;
 }
 
 /* 文字を入れる白い枠線付きの箱 */

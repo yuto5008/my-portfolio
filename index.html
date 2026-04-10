@@ -6,118 +6,129 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="overlay">
-        <div class="container">
-            <header>
-                <h1>My Home Page</h1>
-                <nav>
-                    <ul>
-                        <li><a href="#about">About</a></li>
-                        <li><a href="#skills">Skills</a></li>
-                        <li><a href="#contact">Contact</a></li>
-                    </ul>
-                </nav>
-            </header>
 
-            <main>
-                <section id="about">
-                    <h2>About Me</h2>
-                    <p>情報通信工学を専攻している学部3年生です。通信プロトコルや信号処理の理論に興味があり、現在はWeb制作を通じて、理論を形にする楽しさを学んでいます。</p>
-                </section>
-                <section id="weather">
-    <h2>Current Weather</h2>
-    <div id="weather-info" class="weather-display">
-        <span class="loading">Fetching data...</span>
-    </div>
-</section>
+    <div class="bg-section bmw-bg">
+        <div class="overlay">
+            <div class="container">
+                <header>
+                    <h1>My Home Page</h1>
+                    <nav>
+                        <ul>
+                            <li><a href="#about">About</a></li>
+                            <li><a href="#skills">Skills</a></li>
+                            <li><a href="#contact">Contact</a></li>
+                        </ul>
+                    </nav>
+                </header>
 
-                <section id="skills">
-                    <h2>Skills & Interests</h2>
-                    <div class="skills-container">
-                        <span class="tag">Information Theory</span>
-                        <span class="tag">C / Python</span>
-                        <span class="tag">Signal Processing</span>
-                        <span class="tag">HTML/CSS</span>
-                    </div>
-                </section>
-
-                <section id="favorites">
-                    <h2>Favorites</h2>
-                    <ul>
-                        <li>BMW (M-series / Performance Cars) & JDM</li>
-                        <li>Programming</li>
-                        <li id="travel-btn" style="cursor: pointer; color: #00ffcc; text-decoration: underline;">
-    Travel (Turkey, Greece, etc.) 📸
-</li>
-
-<div id="travel-search-container" style="display:none; margin: 15px 0;">
-    <div id="search-tags" style="margin-bottom: 15px;">
-        <span class="tag-chip" onclick="setSearch('ギリシャ')">#ギリシャ</span>
-        <span class="tag-chip" onclick="setSearch('トルコ')">#トルコ</span>
-        <span class="tag-chip" onclick="setSearch('和歌山')">#和歌山</span>
-        <span class="tag-chip" onclick="setSearch('富山')">#富山</span>
-        <span class="tag-chip" onclick="setSearch('')">#すべて表示</span>
-    </div>
-
-    <input type="text" id="travel-search-input" placeholder="場所を入力（例：ギリシャ、富山）" 
-           style="padding: 10px; width: 80%; border-radius: 5px; border: 1px solid #00ffcc; background: rgba(0,0,0,0.5); color: white;">
-</div>
-
-<div id="travel-gallery" style="display:none; margin-top: 20px;">
-    <div id="photo-list" class="gallery-grid">
-        <p style="color: #ccc; grid-column: 1 / -1; text-align: center;">
-            キーワードを入力するか、上のタグを選択してください。
-        </p>
-    </div>
-</div>
-
-<style>
-    .tag-chip {
-        display: inline-block;
-        background: rgba(0, 255, 204, 0.15);
-        color: #00ffcc;
-        padding: 4px 10px;
-        border-radius: 15px;
-        margin-right: 6px;
-        margin-bottom: 8px;
-        cursor: pointer;
-        font-size: 0.8rem;
-        border: 1px solid rgba(0, 255, 204, 0.4);
-        transition: 0.2s;
-    }
-    .tag-chip:hover {
-        background: rgba(0, 255, 204, 0.3);
-        transform: translateY(-2px);
-    }
-</style>
-                    </ul>
-                </section>
-                <section id="ai-concierge">
-    <h2>AI Car Concierge</h2>
-    <div class="concierge-box">
-        <p>あなたの希望を伝えると、AIがBMWやJDMから最適な1台を提案します。</p>
-        <textarea id="car-query" placeholder="例：予算500万で、週末のドライブが楽しくなるBMWを教えて"></textarea>
-        <button id="ask-btn" onclick="askCarAI()">AIに相談する</button>
-        <div id="ai-result" class="weather-display" style="display:none; margin-top: 15px;">
+                <main>
+                    <section id="about">
+                        <h2>About Me</h2>
+                        <p>情報通信工学を専攻している学部3年生です。通信プロトコルや信号処理の理論に興味があり、現在はWeb制作を通じて、理論を形にする楽しさを学んでいます。</p>
+                    </section>
+                    <section id="weather">
+                        <h2>Current Weather</h2>
+                        <div id="weather-info" class="weather-display">
+                            <span class="loading">Fetching data...</span>
+                        </div>
+                    </section>
+                </main>
             </div>
-    </div>
-</section>
-
-                <section id="contact">
-                    <h2>Contact</h2>
-                    <p>インターンシップや技術的な交流に興味があります。お気軽にご連絡ください。</p>
-                    <a href="mailto:your-email@example.com" class="contact-button">メールを送る</a>
-                </section>
-            </main>
-
-            <footer>
-                <p>© 2026 My Website</p>
-                <p style="font-size: 0.7rem; opacity: 0.6;">
-                    Photo by <a href="https://unsplash.com/ja/@martinkatler" target="_blank" style="color: inherit;">Martin Katler</a> on <a href="https://unsplash.com/ja/photos/94lAQc7ipNg" target="_blank" style="color: inherit;">Unsplash</a>
-                </p>
-            </footer>
         </div>
     </div>
+
+    <div class="bg-section silvia-bg">
+        <div class="overlay">
+            <div class="container">
+                <main>
+                    <section id="skills">
+                        <h2>Skills & Interests</h2>
+                        <div class="skills-container">
+                            <span class="tag">Information Theory</span>
+                            <span class="tag">C / Python</span>
+                            <span class="tag">Signal Processing</span>
+                            <span class="tag">HTML/CSS</span>
+                        </div>
+                    </section>
+
+                    <section id="favorites">
+                        <h2>Favorites</h2>
+                        <ul>
+                            <li>BMW (M-series / Performance Cars) & JDM</li>
+                            <li>Programming</li>
+                            <li id="travel-btn" style="cursor: pointer; color: #00ffcc; text-decoration: underline;">
+                                Travel (Turkey, Greece, etc.) 📸
+                            </li>
+
+                            <div id="travel-search-container" style="display:none; margin: 15px 0;">
+                                <div id="search-tags" style="margin-bottom: 15px;">
+                                    <span class="tag-chip" onclick="setSearch('ギリシャ')">#ギリシャ</span>
+                                    <span class="tag-chip" onclick="setSearch('トルコ')">#トルコ</span>
+                                    <span class="tag-chip" onclick="setSearch('和歌山')">#和歌山</span>
+                                    <span class="tag-chip" onclick="setSearch('富山')">#富山</span>
+                                    <span class="tag-chip" onclick="setSearch('')">#すべて表示</span>
+                                </div>
+                                <input type="text" id="travel-search-input" placeholder="場所を入力（例：ギリシャ、富山）" 
+                                       style="padding: 10px; width: 80%; border-radius: 5px; border: 1px solid #00ffcc; background: rgba(0,0,0,0.5); color: white;">
+                            </div>
+
+                            <div id="travel-gallery" style="display:none; margin-top: 20px;">
+                                <div id="photo-list" class="gallery-grid">
+                                    <p style="color: #ccc; grid-column: 1 / -1; text-align: center;">
+                                        キーワードを入力するか、上のタグを選択してください。
+                                    </p>
+                                </div>
+                            </div>
+                        </ul>
+                    </section>
+
+                    <section id="ai-concierge">
+                        <h2>AI Car Concierge</h2>
+                        <div class="concierge-box">
+                            <p>あなたの希望を伝えると、AIがBMWやJDMから最適な1台を提案します。</p>
+                            <textarea id="car-query" placeholder="例：予算500万で、週末のドライブが楽しくなるBMWを教えて"></textarea>
+                            <button id="ask-btn" onclick="askCarAI()">AIに相談する</button>
+                            <div id="ai-result" class="weather-display" style="display:none; margin-top: 15px;"></div>
+                        </div>
+                    </section>
+
+                    <section id="contact">
+                        <h2>Contact</h2>
+                        <p>インターンシップや技術的な交流に興味があります。お気軽にご連絡ください。</p>
+                        <a href="mailto:your-email@example.com" class="contact-button">メールを送る</a>
+                    </section>
+                </main>
+
+                <footer>
+                    <p>© 2026 My Website</p>
+                    <p style="font-size: 0.7rem; opacity: 0.6;">
+                        Photo by <a href="https://unsplash.com/ja/@martinkatler" target="_blank" style="color: inherit;">Martin Katler</a> & others on Unsplash
+                    </p>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Travelタグのスタイル */
+        .tag-chip {
+            display: inline-block;
+            background: rgba(0, 255, 204, 0.15);
+            color: #00ffcc;
+            padding: 4px 10px;
+            border-radius: 15px;
+            margin-right: 6px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            border: 1px solid rgba(0, 255, 204, 0.4);
+            transition: 0.2s;
+        }
+        .tag-chip:hover {
+            background: rgba(0, 255, 204, 0.3);
+            transform: translateY(-2px);
+        }
+    </style>
 
     <script type="module">
     // --- 1. Supabaseの初期設定 ---
