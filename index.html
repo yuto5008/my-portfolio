@@ -321,7 +321,6 @@ window.askCarAI = async function() {
 </script>
 
 <script>
-// --- 1. アルゴリズム（ハフマン木生成） ---
 class HuffmanNode {
     constructor(char, freq, left = null, right = null) {
         this.char = char; this.freq = freq; this.left = left; this.right = right;
@@ -344,45 +343,43 @@ function generateHuffman(text) {
         if (node.char !== null) codes[node.char] = code;
         buildTable(node.left, code + "0"); buildTable(node.right, code + "1");
     }
-    buildTable(nodes[0], "");
+    if (nodes[0]) buildTable(nodes[0], "");
     return { root: nodes[0], codes, freqMap };
 }
 
-// --- 2. Canvas 描画エンジン ---
 const canvas = document.getElementById('tree-canvas');
 const ctx = canvas.getContext('2d');
 
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+
 function drawTree(node, x, y, spacing) {
     if (!node) return;
-
     if (node.left) {
-        ctx.beginPath(); ctx.strokeStyle = "rgba(52, 152, 219, 0.6)";
-        ctx.lineWidth = 2; ctx.moveTo(x, y); ctx.lineTo(x - spacing, y + 70); ctx.stroke();
-        drawTree(node.left, x - spacing, y + 70, spacing * 0.52);
+        ctx.beginPath(); ctx.strokeStyle = "#3498db"; ctx.lineWidth = 2;
+        ctx.moveTo(x, y); ctx.lineTo(x - spacing, y + 80); ctx.stroke();
+        drawTree(node.left, x - spacing, y + 80, spacing * 0.5);
     }
     if (node.right) {
-        ctx.beginPath(); ctx.strokeStyle = "rgba(0, 255, 204, 0.6)";
-        ctx.lineWidth = 2; ctx.moveTo(x, y); ctx.lineTo(x + spacing, y + 70); ctx.stroke();
-        drawTree(node.right, x + spacing, y + 70, spacing * 0.52);
+        ctx.beginPath(); ctx.strokeStyle = "#00ffcc"; ctx.lineWidth = 2;
+        ctx.moveTo(x, y); ctx.lineTo(x + spacing, y + 80); ctx.stroke();
+        drawTree(node.right, x + spacing, y + 80, spacing * 0.5);
     }
-
-    // ノードを描く
     ctx.beginPath();
-    ctx.arc(x, y, 6, 0, Math.PI * 2);
+    ctx.arc(x, y, 7, 0, Math.PI * 2);
     ctx.fillStyle = node.char ? "#00ffcc" : "#fff";
-    ctx.shadowBlur = 10; ctx.shadowColor = ctx.fillStyle;
+    ctx.shadowBlur = 15; ctx.shadowColor = ctx.fillStyle;
     ctx.fill();
-    ctx.shadowBlur = 0; // シャドウ解除
-
+    ctx.shadowBlur = 0;
     if (node.char) {
-        ctx.fillStyle = "#fff";
-        ctx.font = "bold 14px Arial";
-        const displayChar = node.char === " " ? "SPC" : node.char;
-        ctx.fillText(displayChar, x - 12, y + 25);
+        ctx.fillStyle = "#fff"; ctx.font = "bold 14px Arial";
+        ctx.fillText(node.char === " " ? "SPC" : node.char, x - 10, y + 25);
     }
 }
 
-// --- 3. UI 制御 ---
 const container = document.querySelector('.container');
 const calcBtn = document.getElementById('calc-huffman-btn');
 const closeBtn = document.getElementById('close-huffman-btn');
@@ -392,20 +389,15 @@ calcBtn.addEventListener('click', () => {
     const res = generateHuffman(text);
     if (!res) return;
 
-    // 表示切り替え
     container.classList.add('is-expanded');
     closeBtn.style.display = 'inline-block';
     document.getElementById('huffman-result').style.display = 'block';
 
-    // Canvasリサイズ
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    // 木の描画（右側のスペースを狙って配置）
+    resizeCanvas();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawTree(res.root, canvas.width * 0.72, 80, canvas.width * 0.16);
+    // 右側の余白（widthの65%付近）に描画
+    drawTree(res.root, canvas.width * 0.65, 100, canvas.width * 0.15);
 
-    // 統計表示
     let entropy = 0; let totalBits = 0;
     for (let char in res.freqMap) {
         let p = res.freqMap[char] / text.length;
@@ -413,22 +405,18 @@ calcBtn.addEventListener('click', () => {
         totalBits += res.freqMap[char] * res.codes[char].length;
     }
     document.getElementById('stats-area').innerHTML = `
-        <p><strong>エントロピー:</strong> ${entropy.toFixed(3)} bit</p>
-        <p><strong>平均符号長:</strong> ${(totalBits/text.length).toFixed(3)} bit</p>
-        <p style="color:#00ffcc">圧縮率: ${((1 - (totalBits/(text.length*8)))*100).toFixed(1)}% UP!</p>
+        <p>エントロピー: ${entropy.toFixed(3)} bit</p>
+        <p>平均符号長: ${(totalBits/text.length).toFixed(3)} bit</p>
     `;
 });
 
-// 「戻る」ボタン、または右側の余白をクリックでリセット
-const resetLayout = () => {
+const reset = () => {
     container.classList.remove('is-expanded');
     closeBtn.style.display = 'none';
-    setTimeout(() => ctx.clearRect(0, 0, canvas.width, canvas.height), 500);
+    setTimeout(() => ctx.clearRect(0, 0, canvas.width, canvas.height), 700);
 };
-
-closeBtn.addEventListener('click', resetLayout);
+closeBtn.addEventListener('click', reset);
 canvas.addEventListener('click', (e) => {
-    // コンテナの外側をクリックした時だけ戻る
-    if (e.clientX > window.innerWidth * 0.4) resetLayout();
+    if (e.clientX > window.innerWidth * 0.4) reset();
 });
 </script>

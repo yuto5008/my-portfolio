@@ -657,47 +657,46 @@ footer {
 
 
 /* 実験用
-/* コンテナの基本設定（アニメーションを滑らかに） */
+/* コンテナ全体の制御 */
 .container {
-    transition: transform 0.7s cubic-bezier(0.19, 1, 0.22, 1);
-    z-index: 10;
+    transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
     position: relative;
+    z-index: 10;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-/* 左にスライドした時の状態 */
+/* 解析モード（見切れないスリム設定） */
 .container.is-expanded {
-    transform: translateX(-28vw); /* 画面の左側に寄せる */
+    margin-left: 3vw; /* 左端に3%の余白を確保 */
+    margin-right: auto;
+    width: 30vw;      /* 幅を30%に制限 */
+    min-width: 320px; /* 小さくなりすぎを防止 */
 }
 
-/* キャンバスの設定（背景として機能させる） */
+/* 描画用キャンバス */
 #tree-canvas {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: 5; /* コンテナより後ろ */
+    z-index: 5;
     opacity: 0;
-    pointer-events: none; /* 初期状態ではクリック無効 */
+    pointer-events: none;
     transition: opacity 0.8s ease;
 }
 
-/* スライド時にキャンバスを浮き上がらせる */
 .container.is-expanded + #tree-canvas {
     opacity: 1;
-    pointer-events: auto; /* スライド中はクリックで戻れるようにする */
+    pointer-events: auto;
 }
 
-/* 戻るボタンの基本スタイル */
+/* 戻るボタンのスタイル */
 #close-huffman-btn {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.3);
     color: white;
     border-radius: 20px;
     cursor: pointer;
-    transition: 0.3s;
-}
-
-#close-huffman-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
 }
