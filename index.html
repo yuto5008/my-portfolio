@@ -47,6 +47,7 @@
     </div>
 </section>
 
+
                 <section id="favorites">
                     <h2>Favorites</h2>
                     <ul>
@@ -92,6 +93,21 @@
                         <div id="ai-result" class="weather-display" style="display:none; margin-top: 15px;"></div>
                     </div>
                 </section>
+
+
+            <section id="theory-lab">
+    <h2>Theory Lab: Data Compression</h2>
+    <div class="lab-box">
+        <p>ハフマン符号化によるデータ圧縮シミュレーション</p>
+        <input type="text" id="huffman-input" placeholder="解析する文字列を入力（例：abracadabra）">
+        <button id="calc-huffman-btn">アルゴリズムを実行</button>
+
+        <div id="huffman-result" style="display:none;">
+            <div id="stats-area">
+                </div>
+        </div>
+    </div>
+</section>
 
                 <section id="contact">
                     <h2>Contact</h2>
@@ -297,4 +313,55 @@ window.askCarAI = async function() {
         btn.innerText = "AIに相談する";
     }
 }
+</script>
+
+<script>
+    // 1. アルゴリズム本体
+    class HuffmanNode {
+        constructor(char, freq, left = null, right = null) {
+            this.char = char; this.freq = freq; this.left = left; this.right = right;
+        }
+    }
+
+    function generateHuffmanCode(text) {
+        if (!text) return null;
+        const freqMap = {};
+        for (let char of text) freqMap[char] = (freqMap[char] || 0) + 1;
+        let nodes = Object.entries(freqMap).map(([char, freq]) => new HuffmanNode(char, freq));
+        while (nodes.length > 1) {
+            nodes.sort((a, b) => a.freq - b.freq);
+            const left = nodes.shift(); const right = nodes.shift();
+            nodes.push(new HuffmanNode(null, left.freq + right.freq, left, right));
+        }
+        const codes = {};
+        function buildTable(node, code) {
+            if (!node) return;
+            if (node.char !== null) codes[node.char] = code;
+            buildTable(node.left, code + "0"); buildTable(node.right, code + "1");
+        }
+        buildTable(nodes[0], "");
+        return { codes, freqMap };
+    }
+
+    // 2. ボタンを押した時の処理
+    document.getElementById('calc-huffman-btn').addEventListener('click', () => {
+        const text = document.getElementById('huffman-input').value;
+        const result = generateHuffmanCode(text);
+        if (!result) return;
+
+        const { codes, freqMap } = result;
+        let entropy = 0; let totalBits = 0;
+        for (let char in freqMap) {
+            let p = freqMap[char] / text.length;
+            entropy -= p * Math.log2(p);
+            totalBits += freqMap[char] * codes[char].length;
+        }
+
+        document.getElementById('huffman-result').style.display = 'block';
+        document.getElementById('stats-area').innerHTML = `
+            <p><strong>エントロピー:</strong> ${entropy.toFixed(3)} bit/char</p>
+            <p><strong>平均符号長:</strong> ${(totalBits / text.length).toFixed(3)} bit/char</p>
+            <p style="color: #00ffcc;"><strong>圧縮率:</strong> ${((1 - totalBits / (text.length * 8)) * 100).toFixed(1)}% 削減</p>
+        `;
+    });
 </script>
