@@ -654,3 +654,50 @@ footer {
     border-radius: 10px;
     font-size: 0.9rem;
 }
+
+
+/* 実験用
+/* コンテナの基本設定（アニメーションを滑らかに） */
+.container {
+    transition: transform 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+    z-index: 10;
+    position: relative;
+}
+
+/* 左にスライドした時の状態 */
+.container.is-expanded {
+    transform: translateX(-28vw); /* 画面の左側に寄せる */
+}
+
+/* キャンバスの設定（背景として機能させる） */
+#tree-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 5; /* コンテナより後ろ */
+    opacity: 0;
+    pointer-events: none; /* 初期状態ではクリック無効 */
+    transition: opacity 0.8s ease;
+}
+
+/* スライド時にキャンバスを浮き上がらせる */
+.container.is-expanded + #tree-canvas {
+    opacity: 1;
+    pointer-events: auto; /* スライド中はクリックで戻れるようにする */
+}
+
+/* 戻るボタンの基本スタイル */
+#close-huffman-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#close-huffman-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}

@@ -95,19 +95,24 @@
                 </section>
 
 
-            <section id="theory-lab">
-    <h2>Theory Lab: Data Compression</h2>
+           <section id="theory-lab">
+    <h2>Theory Lab: Huffman Coding</h2>
     <div class="lab-box">
-        <p>ハフマン符号化によるデータ圧縮シミュレーション</p>
-        <input type="text" id="huffman-input" placeholder="解析する文字列を入力（例：abracadabra）">
-        <button id="calc-huffman-btn">アルゴリズムを実行</button>
-
-        <div id="huffman-result" style="display:none;">
-            <div id="stats-area">
-                </div>
+        <p>ハフマン符号化でデータの「重み」を可視化する</p>
+        <input type="text" id="huffman-input" placeholder="文字を入力（例：osaka university）">
+        
+        <div class="lab-buttons" style="display: flex; gap: 10px; margin-top: 10px;">
+            <button id="calc-huffman-btn" style="flex: 2;">解析実行 & スライド</button>
+            <button id="close-huffman-btn" style="flex: 1; display: none;">戻る</button>
+        </div>
+        
+        <div id="huffman-result" style="display:none; margin-top:15px;">
+            <div id="stats-area"></div>
         </div>
     </div>
 </section>
+
+<canvas id="tree-canvas"></canvas>
 
                 <section id="contact">
                     <h2>Contact</h2>
@@ -316,52 +321,114 @@ window.askCarAI = async function() {
 </script>
 
 <script>
-    // 1. アルゴリズム本体
-    class HuffmanNode {
-        constructor(char, freq, left = null, right = null) {
-            this.char = char; this.freq = freq; this.left = left; this.right = right;
-        }
+// --- 1. アルゴリズム（ハフマン木生成） ---
+class HuffmanNode {
+    constructor(char, freq, left = null, right = null) {
+        this.char = char; this.freq = freq; this.left = left; this.right = right;
+    }
+}
+
+function generateHuffman(text) {
+    if (!text) return null;
+    const freqMap = {};
+    for (let char of text) freqMap[char] = (freqMap[char] || 0) + 1;
+    let nodes = Object.entries(freqMap).map(([char, freq]) => new HuffmanNode(char, freq));
+    while (nodes.length > 1) {
+        nodes.sort((a, b) => a.freq - b.freq);
+        const left = nodes.shift(); const right = nodes.shift();
+        nodes.push(new HuffmanNode(null, left.freq + right.freq, left, right));
+    }
+    const codes = {};
+    function buildTable(node, code) {
+        if (!node) return;
+        if (node.char !== null) codes[node.char] = code;
+        buildTable(node.left, code + "0"); buildTable(node.right, code + "1");
+    }
+    buildTable(nodes[0], "");
+    return { root: nodes[0], codes, freqMap };
+}
+
+// --- 2. Canvas 描画エンジン ---
+const canvas = document.getElementById('tree-canvas');
+const ctx = canvas.getContext('2d');
+
+function drawTree(node, x, y, spacing) {
+    if (!node) return;
+
+    if (node.left) {
+        ctx.beginPath(); ctx.strokeStyle = "rgba(52, 152, 219, 0.6)";
+        ctx.lineWidth = 2; ctx.moveTo(x, y); ctx.lineTo(x - spacing, y + 70); ctx.stroke();
+        drawTree(node.left, x - spacing, y + 70, spacing * 0.52);
+    }
+    if (node.right) {
+        ctx.beginPath(); ctx.strokeStyle = "rgba(0, 255, 204, 0.6)";
+        ctx.lineWidth = 2; ctx.moveTo(x, y); ctx.lineTo(x + spacing, y + 70); ctx.stroke();
+        drawTree(node.right, x + spacing, y + 70, spacing * 0.52);
     }
 
-    function generateHuffmanCode(text) {
-        if (!text) return null;
-        const freqMap = {};
-        for (let char of text) freqMap[char] = (freqMap[char] || 0) + 1;
-        let nodes = Object.entries(freqMap).map(([char, freq]) => new HuffmanNode(char, freq));
-        while (nodes.length > 1) {
-            nodes.sort((a, b) => a.freq - b.freq);
-            const left = nodes.shift(); const right = nodes.shift();
-            nodes.push(new HuffmanNode(null, left.freq + right.freq, left, right));
-        }
-        const codes = {};
-        function buildTable(node, code) {
-            if (!node) return;
-            if (node.char !== null) codes[node.char] = code;
-            buildTable(node.left, code + "0"); buildTable(node.right, code + "1");
-        }
-        buildTable(nodes[0], "");
-        return { codes, freqMap };
+    // ノードを描く
+    ctx.beginPath();
+    ctx.arc(x, y, 6, 0, Math.PI * 2);
+    ctx.fillStyle = node.char ? "#00ffcc" : "#fff";
+    ctx.shadowBlur = 10; ctx.shadowColor = ctx.fillStyle;
+    ctx.fill();
+    ctx.shadowBlur = 0; // シャドウ解除
+
+    if (node.char) {
+        ctx.fillStyle = "#fff";
+        ctx.font = "bold 14px Arial";
+        const displayChar = node.char === " " ? "SPC" : node.char;
+        ctx.fillText(displayChar, x - 12, y + 25);
     }
+}
 
-    // 2. ボタンを押した時の処理
-    document.getElementById('calc-huffman-btn').addEventListener('click', () => {
-        const text = document.getElementById('huffman-input').value;
-        const result = generateHuffmanCode(text);
-        if (!result) return;
+// --- 3. UI 制御 ---
+const container = document.querySelector('.container');
+const calcBtn = document.getElementById('calc-huffman-btn');
+const closeBtn = document.getElementById('close-huffman-btn');
 
-        const { codes, freqMap } = result;
-        let entropy = 0; let totalBits = 0;
-        for (let char in freqMap) {
-            let p = freqMap[char] / text.length;
-            entropy -= p * Math.log2(p);
-            totalBits += freqMap[char] * codes[char].length;
-        }
+calcBtn.addEventListener('click', () => {
+    const text = document.getElementById('huffman-input').value;
+    const res = generateHuffman(text);
+    if (!res) return;
 
-        document.getElementById('huffman-result').style.display = 'block';
-        document.getElementById('stats-area').innerHTML = `
-            <p><strong>エントロピー:</strong> ${entropy.toFixed(3)} bit/char</p>
-            <p><strong>平均符号長:</strong> ${(totalBits / text.length).toFixed(3)} bit/char</p>
-            <p style="color: #00ffcc;"><strong>圧縮率:</strong> ${((1 - totalBits / (text.length * 8)) * 100).toFixed(1)}% 削減</p>
-        `;
-    });
+    // 表示切り替え
+    container.classList.add('is-expanded');
+    closeBtn.style.display = 'inline-block';
+    document.getElementById('huffman-result').style.display = 'block';
+
+    // Canvasリサイズ
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // 木の描画（右側のスペースを狙って配置）
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawTree(res.root, canvas.width * 0.72, 80, canvas.width * 0.16);
+
+    // 統計表示
+    let entropy = 0; let totalBits = 0;
+    for (let char in res.freqMap) {
+        let p = res.freqMap[char] / text.length;
+        entropy -= p * Math.log2(p);
+        totalBits += res.freqMap[char] * res.codes[char].length;
+    }
+    document.getElementById('stats-area').innerHTML = `
+        <p><strong>エントロピー:</strong> ${entropy.toFixed(3)} bit</p>
+        <p><strong>平均符号長:</strong> ${(totalBits/text.length).toFixed(3)} bit</p>
+        <p style="color:#00ffcc">圧縮率: ${((1 - (totalBits/(text.length*8)))*100).toFixed(1)}% UP!</p>
+    `;
+});
+
+// 「戻る」ボタン、または右側の余白をクリックでリセット
+const resetLayout = () => {
+    container.classList.remove('is-expanded');
+    closeBtn.style.display = 'none';
+    setTimeout(() => ctx.clearRect(0, 0, canvas.width, canvas.height), 500);
+};
+
+closeBtn.addEventListener('click', resetLayout);
+canvas.addEventListener('click', (e) => {
+    // コンテナの外側をクリックした時だけ戻る
+    if (e.clientX > window.innerWidth * 0.4) resetLayout();
+});
 </script>
